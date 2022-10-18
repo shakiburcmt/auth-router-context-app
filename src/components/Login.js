@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/UserContext';
 
 const Login = () => {
+    const { signIn } = useContext(AuthContext);
+
+    // login korle home path e niye jabe tai nicher kaj kora hoyeche useNavigate er maddhome
+    const navigate = useNavigate();
+
     const handleSubmit = event => {
         event.preventDefault();
         const form = event.target;
         const email = form.email.value;
         const password = form.password.value;
-        console.log(email,password);
+        console.log(email, password);
+
+        // got return from UserContext
+        signIn(email, password)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                form.reset();
+                navigate('/')
+            })
+            .catch(error => {
+                console.error(error);
+            })
     }
     return (
         <div>
@@ -27,7 +46,7 @@ const Login = () => {
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="password" name="password" placeholder="password" className="input input-bordered" required/>
+                                <input type="password" name="password" placeholder="password" className="input input-bordered" required />
                                 <label className="label">
                                     <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                 </label>
